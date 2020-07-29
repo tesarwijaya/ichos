@@ -1,0 +1,72 @@
+<html>
+    <Head>
+        <title>Ichos</title>
+        <style>
+            body {
+              margin: 0 auto;
+              max-width: 800px;
+              padding: 0 20px;
+            }
+            
+            .container {
+              border: 2px solid #dedede;
+              background-color: #f1f1f1;
+              border-radius: 5px;
+              padding: 10px;
+              margin: 10px 0;
+            }
+
+            .message-input {
+                width: 100%;
+                border: 2px solid #dedede;
+                border-radius: 5px;
+                padding: 10px;
+                margin: 10px 0;
+            }
+
+            .submit-btn {
+                padding: 10px;
+                text-transform: uppercase;
+            }
+            </style>
+    </Head>
+    <body>
+        <form id="messagesForm">
+            <input id="input" class="message-input" type="text" placeholder="Type message here..." />
+            <input type="submit" class="submit-btn">
+        </form>
+        <pre id="stat"></pre>
+        <pre id="messages"></pre>
+
+        <script>
+            var input = document.getElementById("input");
+            var stat = document.getElementById("stat");
+            var messagesForm = document.getElementById("messagesForm");
+            var messages = document.getElementById("messages");
+            var socket = new WebSocket("ws://localhost:8000/echo");
+        
+            socket.onopen = function () {
+                stat.innerHTML += "stat: Connected\n";
+            };
+        
+            socket.onmessage = function (e) {
+                let inn = '';
+                if (e.data) {
+                    const res = JSON.parse(e.data);
+                    res.Messages.forEach(element => {
+                        inn += `<div class="container">${element}</div>`;
+                    });
+                }
+        
+                messages.innerHTML = inn;
+            };
+
+            messagesForm.onsubmit= function(e) {
+                e.preventDefault()
+
+                socket.send(input.value);
+                input.value = "";
+            }
+        </script>
+    </body>
+</html>

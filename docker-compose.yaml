@@ -1,0 +1,12 @@
+version: "2"
+
+services:
+  ichos:
+    image: github.com/tesarwijaya/ichos:latest
+    build:
+      context: .
+      dockerfile: dockerfiles/app.docker
+    container_name: "ichos"
+    working_dir: /usr/src/app
+    ports:
+      - "8000:8000"
